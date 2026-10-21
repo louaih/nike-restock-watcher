@@ -3,7 +3,24 @@
 Polls Nike's stock API every ~5 minutes and emails you when any size (or the sizes you pick)
 of a product comes back in stock. Uses only the Python standard library (3.6+).
 
-## Install on the VPS
+## Run on GitHub Actions (no server)
+
+[`.github/workflows/watch.yml`](.github/workflows/watch.yml) runs a check every ~5 minutes
+(GitHub delays scheduled runs, so expect 5-15). Set the email settings as repo secrets:
+
+```bash
+gh secret set -f config.env   # SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, EMAIL_TO
+gh variable set SIZES --body "L"   # optional size filter
+gh workflow run watch.yml          # run a check now
+```
+
+GitHub pauses scheduled workflows after 60 days without commits; re-enable from the Actions tab.
+
+## Run on a server
+
+Nike blocks many VPS/datacenter IPs (HTTP 403). Check first with `python3 watcher.py --once`.
+
+### Install
 
 ```bash
 git clone <repo-url> /opt/nike-restock-watcher
@@ -15,7 +32,7 @@ python3 watcher.py --once                             # confirm Nike API reachab
 ./install.sh                                          # install + start systemd service
 ```
 
-## Update
+### Update
 
 ```bash
 cd /opt/nike-restock-watcher && git pull && ./install.sh

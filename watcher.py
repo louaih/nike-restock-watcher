@@ -184,14 +184,13 @@ def main():
         return
 
     state = load_state(cfg.state_file)
-    failures = 0
     while True:
         try:
             state = check(cfg, state)
-            cfg.state_file.write_text(json.dumps(state))
-            failures = 0
+            state["failures"] = 0
         except Exception as e:
-            failures += 1
+            # Count persisted so the alert also works with --once runs (e.g. GitHub Actions).
+            state["failures"] = failures = state.get("failures", 0) + 1
             log.error("Check failed (%d in a row): %s", failures, e)
             if failures == FAILURE_ALERT_THRESHOLD:
                 try:
@@ -199,6 +198,7 @@ def main():
                                f"{failures} consecutive checks failed. Last error:\n{e!r}\n")
                 except Exception as mail_err:
                     log.error("Could not send failure alert: %s", mail_err)
+        cfg.state_file.write_text(json.dumps(state))
         if args.once:
             return
         time.sleep(cfg.interval * random.uniform(0.8, 1.2))

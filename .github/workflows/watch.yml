@@ -1,6 +1,8 @@
 name: Watch stock
 
 on:
+  schedule:
+    - cron: "*/5 * * * *"  # GitHub's minimum; runs are best-effort and often delayed
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +15,15 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+
+      # Caches are immutable, so each run saves under a new key and restores the newest one.
+      - name: Restore state
+        uses: actions/cache/restore@v4
+        with:
+          path: state.json
+          key: state-${{ github.run_id }}
+          restore-keys: state-
+
       - name: Check stock
         env:
           STYLE_COLOR: IO7254-133
@@ -26,3 +37,10 @@ jobs:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: python3 watcher.py --once
+
+      - name: Save state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state.json
+          key: state-${{ github.run_id }}
