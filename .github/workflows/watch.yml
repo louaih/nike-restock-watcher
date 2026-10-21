@@ -1,0 +1,28 @@
+name: Watch stock
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check stock
+        env:
+          STYLE_COLOR: IO7254-133
+          PRODUCT_URL: https://www.nike.com/t/new-york-knicks-mens-standard-issue-basketball-jacket-OIc02ibp/IO7254-133
+          SIZES: ${{ vars.SIZES }}
+          STATE_FILE: state.json
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python3 watcher.py --once
