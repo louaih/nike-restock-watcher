@@ -1,4 +1,5 @@
 # Nike restock watcher
+[![Watch stock](https://github.com/louaih/nike-restock-watcher/actions/workflows/watch.yml/badge.svg)](https://github.com/louaih/nike-restock-watcher/actions/workflows/watch.yml)
 
 Checks Nike's stock API every ~5 minutes on GitHub Actions and emails you when any size (or the
 sizes you pick) of a product comes back in stock. Uses only the Python standard library.
