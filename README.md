@@ -12,6 +12,7 @@ of a product comes back in stock. Uses only the Python standard library (3.6+).
 gh secret set -f config.env   # SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, EMAIL_TO
 gh variable set SIZES --body "L"   # optional size filter
 gh workflow run watch.yml          # run a check now
+gh workflow run watch.yml -f test_email=true   # send a test email
 ```
 
 GitHub pauses scheduled workflows after 60 days without commits; re-enable from the Actions tab.
