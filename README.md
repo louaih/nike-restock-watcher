@@ -29,4 +29,7 @@ Logs: `journalctl -u nike-restock-watcher -f`
   restocks again, you'll get another email.
 - If 12 checks in a row fail (e.g. Nike blocks the VPS IP with HTTP 403), you get a warning email.
   Setting `HTTPS_PROXY` in `config.env` routes requests through a proxy.
-- To watch a different product, change `STYLE_COLOR` (the `XX0000-000` code at the end of the URL).
+- If Nike blocks the product-info request, it uses the copy saved in `products.json`. Only the
+  stock request has to get through.
+- To watch a different product, change `STYLE_COLOR` (the `XX0000-000` code at the end of the URL),
+  then run `python3 watcher.py --save-product` on a machine Nike doesn't block and commit `products.json`.
